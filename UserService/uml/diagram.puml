@@ -1,0 +1,43 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+
+
+package com.vifinancenews.user.services {
+
+  class AccountService {
+    + getUserProfile(accountId : String) : Account
+    + updateUserNameAndBio(accountId : String, userName : String, bio : String) : boolean
+    + updateAvatar(accountId : String, avatarLink : String) : boolean
+    + softDeleteUser(accountId : String) : boolean
+    + deleteUser(accountId : String) : boolean
+    + permanentlyDeleteExpiredAccounts(days : int) : boolean
+    + getSavedArticles(userId : String, page : int, pageSize : int) : Map<String,Object>
+  }
+
+  class AvatarService {
+    - s3 : S3Client
+    - bucketName : String
+    - baseUrl : String
+    --
+    + uploadAvatar(userId : UUID, avatarStream : InputStream, fileName : String, contentType : String) : String
+    - resizeImage(originalImage : InputStream, maxWidth : int, maxHeight : int) : InputStream
+  }
+}
+
+' Relationships and dependencies
+
+AccountService ..> AccountDAO : uses
+AccountService ..> IdentifierDAO : uses
+AccountService ..> RedisCacheService : uses
+
+IdentifierDAO --> Identifier
+AccountDAO --> Account
+
+AvatarService ..> S3Config : uses
+AvatarService ..> S3Client : uses
+AvatarService ..> Thumbnails : uses
+AvatarService ..> PutObjectRequest : uses
+AvatarService ..> RequestBody : uses
+
+@enduml

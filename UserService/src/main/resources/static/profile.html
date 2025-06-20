@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Profile</title>
+  <link rel="stylesheet" href="/css/styles.css"/>
+</head>
+<body>
+  <header>
+    <h1>User Profile</h1>
+    <nav>
+      <a href="http://localhost:6999/index.html">Home</a>
+      <button id="logout-btn">Logout</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="profile-section">
+      <h2>Profile Information</h2>
+
+      <!-- Avatar -->
+      <img id="avatar" src="/images/default-avatar.png" alt="User Avatar" width="100" />
+
+      <!-- User Info -->
+      <p><strong>Username:</strong> <span id="username">Loading...</span></p>
+      <p><strong>Bio:</strong> <span id="bio">Loading...</span></p>
+    </section>
+
+    <!-- Update Profile Info -->
+    <section id="update-profile-info">
+      <h2>Update Profile Information</h2>
+      <form id="update-info-form">
+        <label for="userName">Username:</label>
+        <input type="text" id="userName" name="userName" />
+
+        <label for="bio">Bio:</label>
+        <textarea id="bioInput" name="bio"></textarea>
+
+        <button type="submit">Update Info</button>
+      </form>
+    </section>
+
+    <!-- Update Avatar -->
+    <section id="update-avatar">
+      <h2>Update Avatar</h2>
+      <form id="update-avatar-form" enctype="multipart/form-data">
+        <label for="new-avatar">Upload New Avatar:</label>
+        <input type="file" id="new-avatar" name="new-avatar" accept="image/*" />
+
+        <!-- Avatar preview section -->
+        <img id="avatar-preview" src="/images/default-avatar.png" alt="Avatar Preview" width="100" />
+
+        <!-- Hidden field to store uploaded avatar URL -->
+        <input type="hidden" id="avatarLink" name="avatarLink" />
+
+        <button type="submit">Update Avatar</button>
+      </form>
+    </section>
+
+    
+
+    <!-- Saved Articles -->
+    <section id="saved-articles-section">
+      <h2>Saved Articles</h2>
+      <button id="show-saved-articles-btn">View Saved Articles</button>
+
+      <div id="saved-articles-modal" style="display: none;">
+        <h3>Your Saved Articles</h3>
+        <div id="saved-articles-container" class="articles-list"></div>
+        <div id="pagination-controls" class="pagination"></div>
+        <button id="close-saved-articles-btn">Close</button>
+      </div>
+    </section>
+
+
+    <!-- Delete Account -->
+    <button id="delete-account-btn" style="color: red;">Delete Account</button>
+  </main>
+
+  <script src="/js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+@startuml
+skinparam classAttributeIconSize 0
+class Main {
+}
+class DatabaseConfig {
+  io.github.cdimascio.dotenv.Dotenv dotenv
+  java.lang.String HOST
+  java.lang.String PORT
+  java.lang.String DATABASE
+  java.lang.String USER
+  java.lang.String PASSWORD
+  java.lang.String URL
+}
+class S3Config {
+  io.github.cdimascio.dotenv.Dotenv dotenv
+  java.lang.String ACCESS_KEY
+  java.lang.String SECRET_KEY
+  java.lang.String REGION
+}
+class AccountDAO {
+}
+class IdentifierDAO {
+}
+class Account {
+  java.lang.String userId
+  java.lang.String userName
+  java.lang.String avatarLink
+  java.lang.String bio
+}
+class Identifier {
+  java.util.UUID id
+  java.lang.String email
+  java.lang.String passwordHash
+  java.lang.String loginMethod
+  java.time.LocalDateTime createdAt
+  java.time.LocalDateTime lastLogin
+  int failedAttempts
+  java.time.LocalDateTime lockoutUntil
+}
+class AccountDeletionScheduler {
+  java.util.concurrent.ScheduledExecutorService scheduler
+}
+class EmailUtility {
+  java.lang.String SMTP_HOST
+  java.lang.String SMTP_PORT
+  java.lang.String SENDER_EMAIL
+  java.lang.String SENDER_PASSWORD
+}
+class 1 {
+  java.net.InetAddress requestingSite
+  int requestingPort
+  java.lang.String requestingProtocol
+  java.lang.String requestingPrompt
+  java.lang.String requestingUserName
+}
+class IDHash {
+}
+class OTPGenerator {
+  java.security.SecureRandom random
+}
+class PasswordHash {
+}
+class RedisCacheService {
+  int OTP_EXPIRY_SECONDS
+  int USER_DATA_EXPIRY_SECONDS
+  com.fasterxml.jackson.databind.ObjectMapper objectMapper
+}
+class RedisConnection {
+  io.github.cdimascio.dotenv.Dotenv dotenv
+  java.lang.String REDIS_HOST
+  java.lang.String REDIS_PASSWORD
+  int REDIS_PORT
+  redis.clients.jedis.JedisPool jedisPool
+}
+class RedisSessionManager {
+  com.fasterxml.jackson.databind.ObjectMapper objectMapper
+  int SESSION_TTL
+}
+class AvatarController {
+  com.vifinancenews.user.services.AvatarService avatarService
+  io.javalin.http.Handler uploadAvatar
+}
+class UserController {
+  com.vifinancenews.user.services.AccountService accountService
+  io.javalin.http.Handler getUserProfile
+  io.javalin.http.Handler updateInfo
+  io.javalin.http.Handler updateAvatar
+  io.javalin.http.Handler deleteUser
+  io.javalin.http.Handler getSavedArticles
+}
+class AccountService {
+}
+class AvatarService {
+  software.amazon.awssdk.services.s3.S3Client s3
+  java.lang.String bucketName
+  java.lang.String baseUrl
+  int MAX_WIDTH
+  int MAX_HEIGHT
+}
+1 --|> Authenticator
+@enduml

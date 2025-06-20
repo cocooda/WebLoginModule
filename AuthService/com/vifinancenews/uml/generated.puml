@@ -1,0 +1,118 @@
+@startuml
+skinparam classAttributeIconSize 0
+class Main {
+}
+class AuthController {
+  com.vifinancenews.auth.services.AuthenticationService authService
+  io.javalin.http.Handler register
+  io.javalin.http.Handler verifyCredentials
+  io.javalin.http.Handler login
+  io.javalin.http.Handler reactivateAccount
+  io.javalin.http.Handler logout
+  io.javalin.http.Handler checkAuth
+  io.javalin.http.Handler requestPasswordReset
+  io.javalin.http.Handler resetPassword
+}
+class GoogleAuthController {
+  com.vifinancenews.auth.services.AuthenticationService authService
+  io.javalin.http.Handler handleGoogleLogin
+}
+class GoogleLoginRequest {
+  java.lang.String idToken
+}
+class GuestController {
+}
+class AuthenticationService {
+}
+class LoginResult {
+  java.lang.String userId
+  boolean softDeleted
+  boolean expired
+}
+class GoogleAuthService {
+  io.github.cdimascio.dotenv.Dotenv dotenv
+  java.lang.String CLIENT_ID
+  com.google.api.client.json.JsonFactory JSON_FACTORY
+}
+class UserDetails {
+  java.lang.String email
+  java.lang.String name
+}
+class DatabaseConfig {
+  io.github.cdimascio.dotenv.Dotenv dotenv
+  java.lang.String HOST
+  java.lang.String PORT
+  java.lang.String DATABASE
+  java.lang.String USER
+  java.lang.String PASSWORD
+  java.lang.String URL
+}
+class S3Config {
+  io.github.cdimascio.dotenv.Dotenv dotenv
+  java.lang.String ACCESS_KEY
+  java.lang.String SECRET_KEY
+  java.lang.String REGION
+}
+class AccountDAO {
+}
+class IdentifierDAO {
+}
+class Account {
+  java.lang.String userId
+  java.lang.String userName
+  java.lang.String avatarLink
+  java.lang.String bio
+}
+class Identifier {
+  java.util.UUID id
+  java.lang.String email
+  java.lang.String passwordHash
+  java.lang.String loginMethod
+  java.time.LocalDateTime createdAt
+  java.time.LocalDateTime lastLogin
+  int failedAttempts
+  java.time.LocalDateTime lockoutUntil
+}
+class AccountDeletionScheduler {
+  java.util.concurrent.ScheduledExecutorService scheduler
+}
+class EmailUtility {
+  java.lang.String SMTP_HOST
+  java.lang.String SMTP_PORT
+  java.lang.String SENDER_EMAIL
+  java.lang.String SENDER_PASSWORD
+}
+class 1 {
+  java.net.InetAddress requestingSite
+  int requestingPort
+  java.lang.String requestingProtocol
+  java.lang.String requestingPrompt
+  java.lang.String requestingUserName
+}
+class IDHash {
+}
+class OTPGenerator {
+  java.security.SecureRandom random
+}
+class PasswordHash {
+}
+class RedisCacheService {
+  int OTP_EXPIRY_SECONDS
+  int USER_DATA_EXPIRY_SECONDS
+  com.fasterxml.jackson.databind.ObjectMapper objectMapper
+}
+class RedisConnection {
+  io.github.cdimascio.dotenv.Dotenv dotenv
+  java.lang.String REDIS_HOST
+  java.lang.String REDIS_PASSWORD
+  int REDIS_PORT
+  redis.clients.jedis.JedisPool jedisPool
+}
+class RedisSessionManager {
+  com.fasterxml.jackson.databind.ObjectMapper objectMapper
+  int SESSION_TTL
+}
+GoogleLoginRequest --|> Record
+LoginResult --|> Record
+1 --|> Authenticator
+@enduml

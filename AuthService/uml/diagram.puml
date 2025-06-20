@@ -1,0 +1,61 @@
+@startuml
+' Define packages
+package "com.vifinancenews.auth.services" {
+
+  class AuthenticationService {
+    + registerUser(email, password, userName, avatarLink, bio, loginMethod) : boolean
+    + createUserFromGoogle(email, userName, avatarLink, bio) : boolean
+    + verifyPassword(email, password) : boolean
+    + login(email, enteredOTP) : LoginResult
+    + loginWithGoogle(email) : LoginResult
+    + requestPasswordReset(email) : boolean
+    + resetPassword(email, otp, newPassword) : boolean
+    + restoreUser(accountId) : boolean
+    + emailExists(email) : boolean
+    + findByEmail(email) : Identifier
+    + isAccountSoftDeleted(accountId) : boolean
+    + isWithinReactivationPeriod(accountId) : boolean
+    --
+    - isAccountLocked(user : Identifier) : boolean
+    - handleFailedLoginAttempt(user : Identifier)
+    - sendOTP(email)
+    - verifyOTP(email, enteredOTP) : boolean
+  }
+
+  class AuthenticationService_LoginResult {
+    + userId : String
+    + softDeleted : boolean
+    + expired : boolean
+  }
+
+  class GoogleAuthService {
+    + getEmailFromIdToken(idTokenString) : String
+    + getUserDetailsFromIdToken(idTokenString) : UserDetails
+  }
+
+  class GoogleAuthService_UserDetails {
+    + email : String
+    + name : String
+  }
+}
+
+
+
+' Relationships
+AuthenticationService ..> IdentifierDAO : uses >
+AuthenticationService ..> AccountDAO : uses >
+AuthenticationService ..> PasswordHash : uses >
+AuthenticationService ..> EmailUtility : uses >
+AuthenticationService ..> OTPGenerator : uses >
+AuthenticationService ..> RedisCacheService : uses >
+AuthenticationService --> AuthenticationService_LoginResult
+
+GoogleAuthService --> GoogleAuthService_UserDetails
+
+IdentifierDAO --> Identifier
+AccountDAO --> Account
+AuthenticationService --> Identifier
+AuthenticationService --> Account
+
+
+@enduml

@@ -1,0 +1,181 @@
+@startuml
+
+package com.vifinancenews.common.config {
+    class DatabaseConfig {
+        {static} - DATABASE : String
+        {static} - HOST : String
+        {static} - PASSWORD : String
+        {static} - PORT : String
+        {static} - URL : String
+        {static} - USER : String
+        {static} - dotenv : Dotenv
+        {static} + getConnection() : Connection
+    }
+
+    class S3Config {
+        {static} - ACCESS_KEY : String
+        {static} - REGION : String
+        {static} - SECRET_KEY : String
+        {static} - dotenv : Dotenv
+        {static} + getBaseUrl() : String
+        {static} + getBucketName() : String
+        {static} + getClient() : S3Client
+    }
+}
+
+package com.vifinancenews.common.daos {
+    class AccountDAO {
+        {static} + deleteExpiredDeletedAccounts(param1 : int) : boolean
+        {static} + deleteFromDeletedAccounts(accountId : String) : boolean
+        {static} + getAccountByAccountId(accountId : String) : Account
+        {static} + getAccountByUserId(userId : UUID) : Account
+        {static} + getDeletedAccountByUserId(userId : UUID) : Account
+        {static} + getDeletedAccountDeletedAt(accountId : String) : Optional
+        {static} + getSavedArticles(accountId : String, limit : int, offset : int) : Map
+        {static} + insertAccount(userId : UUID, userName : String, bio : String, avatarLink : String) : Account
+        {static} + isAccountInDeleted(accountId : String) : boolean
+        {static} + moveAccountToDeleted(accountId : String) : boolean
+        {static} + restoreUserById(accountId : String) : boolean
+        {static} + updateAvatar(accountId : String, avatarLink : String) : boolean
+        {static} + updateUsernameAndBio(accountId : String, userName : String, bio : String) : boolean
+    }
+
+    class IdentifierDAO {
+        {static} + changePassword(userId : UUID, newPassword : String) : boolean
+        {static} + deleteExpiredIdentifiers(limit : int) : boolean
+        {static} + deleteIdentifierByEmail(email : String) : boolean
+        {static} + deleteIdentifierByUserId(userId : UUID) : boolean
+        {static} + getIdentifierByAccountId(accountId : String) : Identifier
+        {static} + getIdentifierByEmail(email : String) : Identifier
+        {static} + insertIdentifier(email : String, passwordHash : String, loginMethod : String) : Identifier
+        {static} + resetFailedAttempts(email : String) : void
+        {static} + updateFailedAttempts(email : String, attempts : int, lockoutTime : LocalDateTime) : void
+        {static} + updateLastLogin(email : String) : void
+        {static} + updatePassword(email : String, newPassword : String) : boolean
+    }
+}
+
+package com.vifinancenews.common.models {
+    class Account {
+        - userId : String
+		- userName : String
+		- avatarLink : String
+		- bio : String
+		+ getUserId() : String
+		+ setUserId(userId : String) : void
+		+ getUserName() : String
+		+ setUserName(userName : String) : void
+		+ getAvatarLink() : String
+		+ setAvatarLink(avatarLink : String) : void
+		+ getBio() : String
+		+ setBio(bio : String) : void
+		+ toString() : String
+    }
+
+    class Identifier {
+        - id : UUID
+		- email : String
+		- passwordHash : String
+		- loginMethod : String
+		- createdAt : LocalDateTime
+		- lastLogin : LocalDateTime
+		- failedAttempts : int
+		- lockoutUntil : LocalDateTime
+
+		+ getId() : UUID
+		+ setId(id : UUID) : void
+		+ getEmail() : String
+		+ setEmail(email : String) : void
+		+ getPasswordHash() : String
+		+ setPasswordHash(passwordHash : String) : void
+		+ getLoginMethod() : String
+		+ setLoginMethod(loginMethod : String) : void
+		+ getCreatedAt() : LocalDateTime
+		+ setCreatedAt(createdAt : LocalDateTime) : void
+		+ getLastLogin() : LocalDateTime
+		+ setLastLogin(lastLogin : LocalDateTime) : void
+		+ getFailedAttempts() : int
+		+ setFailedAttempts(failedAttempts : int) : void
+		+ getLockoutUntil() : LocalDateTime
+		+ setLockoutUntil(lockoutUntil : LocalDateTime) : void
+		
+		+ incrementFailedAttempts() : void
+		+ resetFailedAttempts() : void
+		+ lockAccount(until : LocalDateTime) : void
+		+ isLocked() : boolean
+		+ resetFailedAttemptsAfterTimeout(lastLoginTime : LocalDateTime, lockoutMinutes : int) : void
+    }
+}
+
+package com.vifinancenews.common.utilities {
+    class AccountDeletionScheduler {
+        {static} - scheduler : ScheduledExecutorService
+        {static} + start(task : Runnable, initialDelay : long, interval : long) : void
+        {static} + stop() : void
+    }
+
+    class EmailUtility {
+        {static} - SENDER_EMAIL : String
+        {static} - SENDER_PASSWORD : String
+        {static} - SMTP_HOST : String
+        {static} - SMTP_PORT : String
+        {static} + sendOTP(email : String, otp : String) : void
+    }
+
+    class IDHash {
+        {static} + hashUUID(uuid : UUID) : String
+    }
+
+    class OTPGenerator {
+        {static} - random : SecureRandom
+        {static} + generateOTP() : String
+    }
+
+    class PasswordHash {
+        {static} + hashPassword(password : String) : String
+        {static} + verifyPassword(password : String, hash : String) : boolean
+    }
+
+    class RedisCacheService {
+        {static} - OTP_EXPIRY_SECONDS : int
+        {static} - USER_DATA_EXPIRY_SECONDS : int
+        {static} - objectMapper : ObjectMapper
+        {static} + cacheUserData(email : String, data : Map) : void
+        {static} + clearOTP(email : String) : void
+        {static} + clearUserData(email : String) : void
+        {static} - formatOtpKey(email : String) : String
+        {static} - formatUserKey(email : String) : String
+        {static} + getCachedUserData(email : String) : Map
+        {static} + storeOTP(email : String, otp : String) : void
+        {static} + verifyOTP(email : String, otp : String) : boolean
+    }
+
+    class RedisConnection {
+        {static} - REDIS_HOST : String
+        {static} - REDIS_PASSWORD : String
+        {static} - REDIS_PORT : int
+        {static} - dotenv : Dotenv
+        {static} - jedisPool : JedisPool
+        {static} + getConnection() : Jedis
+    }
+
+    class RedisSessionManager {
+        {static} - SESSION_TTL : int
+        {static} - objectMapper : ObjectMapper
+        {static} + createSession(data : Map) : String
+        {static} + destroySession(sessionId : String) : void
+        {static} + getSession(sessionId : String) : Map
+        {static} - sessionKey(sessionId : String) : String
+        {static} + updateSession(sessionId : String, data : Map) : void
+    }
+}
+
+' Relationships
+AccountDAO --> Account
+IdentifierDAO --> Identifier
+AccountDAO --> DatabaseConfig
+AccountDAO --> IDHash
+IdentifierDAO --> DatabaseConfig
+IdentifierDAO --> IDHash
+
+@enduml
