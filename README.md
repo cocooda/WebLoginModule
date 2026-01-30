@@ -21,15 +21,13 @@ Can be integrated into other web applications as a standalone login module.
 ## 📦 Project Structure
 
 - WebLoginModule/
-+ ServiceCommon/ # Shared models and utilities
-+ AuthService/ # Authentication service (local and Google)
-+ UserService/ # User management service
-+ pom.xml # Parent POM (Java 22, modules, dependencies)
-+ mvnw / mvnw.cmd # Maven Wrapper (Linux/Windows)
-+ .mvn/jvm.config # Java version config
+  - ServiceCommon/   # Shared models and utilities
+  - AuthService/     # Authentication service (local and Google)
+  - UserService/     # User management service
+  - pom.xml          # Parent POM (Java 22, modules, dependencies)
+  - mvnw / mvnw.cmd  # Maven Wrapper (Linux/Windows)
+  - .mvn/jvm.config  # Java version config
 
-
----
 
 ## ✅ Prerequisites
 
@@ -48,7 +46,7 @@ Before you begin, ensure you have the following installed on your machine:
 
 ---
 
-🚀 Getting Started
+## 🚀 Getting Started
 1. Clone the Repository
 ```
 git clone https://github.com/cocooda/WebLoginModule.git
@@ -76,10 +74,10 @@ java -jar target/UserService.jar
 Some modules use a .env file to load secrets and config (e.g., Redis, DB):
 
 Place a .env file inside each required module:
-- `SerivceCommon/.env`
+`SerivceCommon/.env`
 🛡️ .env files should not be committed. Add this to .gitignore.
 
-🧪 Running Tests
+## 🧪 Running Tests
 ```
 mvnw.cmd test   # on Windows
 ./mvnw test     # on Linux/macOS
